@@ -1,14 +1,14 @@
 # Configure Azure Data Share using REST APIs
 
-In this quickstart, you will configure Azure Data Share through REST APIs for Provider and Consumer integration flows. You will use Azure Data Lake Store Gen 2 as the source and destination locations and configure Data Share to transfer data to Consumers on an hourly basis.
+In this tutorial, you will configure Azure Data Share through REST APIs for Provider and Consumer integration flows. You will use Azure Data Lake Store Gen 2 as the source and destination locations and configure Data Share to transfer data to Consumers on an hourly basis.
 
-REST APIs will be invoked using `az rest` command.  This simplies the quickstart by delegating the credential management, request/response flows and error handling.  `az rest` will use the credentials (i.e. OAuth token) from the account that's logged in via `az login` to invoke the requests.  You can learn more from the [Azure CLI documentation](https://docs.microsoft.com/cli/azure/reference-index?view=azure-cli-latest#az-rest).
+REST APIs will be invoked using `az rest` command.  This simplies the tutorial by delegating the credential management, request/response flows and error handling.  `az rest` will use the credentials (i.e. OAuth token) from the account that's logged in via `az login` to invoke the requests.  You can learn more from the [Azure CLI documentation](https://docs.microsoft.com/cli/azure/reference-index?view=azure-cli-latest#az-rest).
 
 You will be able to execute these steps through Cloud Shell.
 
 ## Prequisites
 
-For the purposes of this quickstart, you will need to configure 2 Resource Groups, each with an [Azure Data Lake Store Gen 2 (ADLS Gen 2)](https://docs.microsoft.com/azure/storage/blobs/data-lake-storage-quickstart-create-account).  Following Azure CLI commands can be used to create these resources.
+For the purposes of this tutorial, you will need to configure 2 Resource Groups, each with an [Azure Data Lake Store Gen 2 (ADLS Gen 2)](https://docs.microsoft.com/azure/storage/blobs/data-lake-storage-quickstart-create-account).  Following Azure CLI commands can be used to create these resources.
 
 #### Setup environment variables
 
@@ -42,12 +42,21 @@ export CONSUMER_EMAIL_ADDRESS=""
 
 #### Create Resource Groups
 
+Create two resource groups; one for provider and another for consumer.  Each resource group will contain:
+
+* ADLS Gen 2 storage account
+* Azure Data Share Account
+
+This tutorial can be completed with two different subscriptions or two different tenant.  For simplicity, the provider and consumer are kept in the same subscription. 
+
 ```bash
 az group create -n $PROVIDER_RESOURCE_GROUP -l $PROVIDER_LOCATION
 az group create -n $CONSUMER_RESOURCE_GROUP -l $CONSUMER_LOCATION
 ```
 
 #### Create ADLS Gen 2 Storage Accounts
+
+Create two ADLS Gen 2 storage accounts.  To enable ADLS Gen 2 CLI support, add the `storage-preview` extension.
 
 ```bash
 # Add CLI extension for ADLS Gen 2
@@ -60,7 +69,11 @@ az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-nam
 az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-namespace true -l $CONSUMER_LOCATION -g $CONSUMER_RESOURCE_GROUP -n $CONSUMER_ADLSGEN2_NAME
 ```
 
+![ADLS Gen 2 Storage Accounts](./media/e2e-rest-flow/prereq-rg-adlsgen2.png)
+
 #### Setup filesystem and seed data to the provider storage account
+
+Create a filesystem on the storage account using the `az storage container` command.  Once the filesystem is created, upload a sample dataset (files can be uploaded with nested folders).
 
 ```bash
 # Retrieve the storage account connection string for provider storage account
@@ -69,11 +82,17 @@ export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-strin
 # Create a filesystem
 az storage container create --name $PROVIDER_ADLSGEN2_FS
 
-# Upload files from local machine - change the source to your location and --destination-path is a subpath under the filesystem (i.e. path will be datasetfs/scripts/terraform)
-az storage blob upload-batch --source . --destination datasetfs --destination-path scripts/terraform
+# Upload files from local machine - change the source to your location.  The example will upload data to logs folder (i.e. full path will be datasetfs/logs/)
+az storage blob upload-batch --source . --destination datasetfs --destination-path logs
 ```
 
+![ADLS Gen 2 file system with the uploaded files](./media/e2e-rest-flow/provider-fs-uploaded-files.png)
+
 #### Setup filesystem for the consumer storage account
+
+Create a filesystem on the storage account using the `az storage container` command.  Data from the provider storage account will be copied to this filesystem in subsequent steps.
+
+To upload data, set the environment variable `AZURE_STORAGE_CONNECTION_STRING` with the connection string of the storage account.  This information is extracted using the `--query` Azure CLI option.
 
 ```bash
 # Retrieve the storage account connection string for provider storage account
@@ -82,6 +101,8 @@ export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-strin
 # Create a filesystem
 az storage container create --name $CONSUMER_ADLSGEN2_FS
 ```
+
+![ADLS Gen 2 with empty file system](./media/e2e-rest-flow/consumer-fs.png)
 
 ## Configure Azure Data Share for Provider
 
