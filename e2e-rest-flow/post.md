@@ -430,3 +430,19 @@ You can delete the resource groups to clean up all of the resources.
 az group delete -n $PROVIDER_RESOURCE_GROUP -y --no-wait
 az group delete -n $CONSUMER_RESOURCE_GROUP -y --no-wait
 ```
+
+## References
+
+* [Azure CLI - az rest](https://docs.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-rest)
+* [Azure Data Share Permissions](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions)
+* [Provider - Create Data Share Account](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create)
+* [Provider - Create Share](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create)
+* [Provider - Create Data Set](https://docs.microsoft.com/en-us/rest/api/datashare/datasets/create)
+* [Provider - Setup Synchronization Settings](https://docs.microsoft.com/en-us/rest/api/datashare/synchronizationsettings/create)
+* [Provider - Create email invitation](https://docs.microsoft.com/en-us/rest/api/datashare/invitations/create)
+* [Consumer - List invitations](https://docs.microsoft.com/en-us/rest/api/datashare/consumerinvitations/listinvitations)
+* [Consumer - Accept invitation and subscribe](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/create)
+* [Consumer - List shares on the invitation](https://docs.microsoft.com/en-us/rest/api/datashare/consumersourcedatasets/listbysharesubscription)
+* [Consumer - Create Data Set mapping](https://docs.microsoft.com/en-us/rest/api/datashare/datasetmappings/create)
+* [Consumer - Get Synchronization Settings](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/listsourcesharesynchronizationsettings)
+* [Consumer - Enable incremental synchronization](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/create)
