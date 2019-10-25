@@ -154,7 +154,8 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 
 #### Step 2: Configure read permissions for Azure Data Share account
 
-Please follow the instructions to [setup role assignment](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions#data-providers) such that Data Share Account can **read** data from the ADLS Gen 2 storage account.
+Grant `Storage Blob Data Reader` [role](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions#data-providers) to the ADLS Gen 2 account so that Azure Data Share account can read and share data with the consumers.
+
 
 ```bash
 export PROVIDER_DATASHARE_ACCOUNT_MSI="6af8b838-cf60-40ae-a6aa-419e0c39c254"
