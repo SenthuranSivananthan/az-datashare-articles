@@ -29,7 +29,7 @@ az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-nam
 az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-namespace true -l eastus2 -g ads-demo-consumer -n adlsconsumer
 ```
 
-### Seed data to the provider Storage Account
+### Setup filesystem and seed data to the provider storage account
 
 ```bash
 # Retrieve the storage account connection string for provider storage account
@@ -40,6 +40,16 @@ az storage container create --name datasetfs
 
 # Upload files from local machine - change the source to your location and --destination-path is a subpath under the filesystem (i.e. path will be datasetfs/scripts/terraform)
 az storage blob upload-batch --source . --destination datasetfs --destination-path scripts/terraform
+```
+
+### Setup filestem for the consumer storage account
+
+```bash
+# Retrieve the storage account connection string for provider storage account
+export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-string -g ads-demo-consumer -n adlsconsumer -o json --query "connectionString"`
+
+# Create a filesystem
+az storage container create --name datasetfs
 ```
 
 ## Configure Azure Data Share for Provider
