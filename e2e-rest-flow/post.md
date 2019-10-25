@@ -394,7 +394,7 @@ export CONSUMER_SYNC_RECURRENCE="Hour"
 export CONSUMER_SYNC_TIME="2019-01-01T01:00:52.9614956Z"
 ```
 
-### Step 11:  Trigger full synchronization
+### Step 11:  Trigger incremental synchronization
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/create)
 
@@ -406,7 +406,7 @@ JSON Payload
   "properties": {
     "synchronizationTime": "$CONSUMER_SYNC_TIME",
     "recurrenceInterval": "$CONSUMER_SYNC_RECURRENCE",
-    "synchronizationMode": "FullSync"
+    "synchronizationMode": "Incremental"
   }
 }
 ```
@@ -414,5 +414,5 @@ JSON Payload
 REST API Call
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/triggers/fullcopytrigger?api-version=2018-11-01-preview" --body "{ \"kind\": \"ScheduleBased\", \"properties\": { \"synchronizationTime\": \"$CONSUMER_SYNC_TIME\", \"recurrenceInterval\": \"$CONSUMER_SYNC_RECURRENCE\", \"synchronizationMode\": \"FullSync\" } }"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/triggers/fullcopytrigger?api-version=2018-11-01-preview" --body "{ \"kind\": \"ScheduleBased\", \"properties\": { \"synchronizationTime\": \"$CONSUMER_SYNC_TIME\", \"recurrenceInterval\": \"$CONSUMER_SYNC_RECURRENCE\", \"synchronizationMode\": \"Incremental\" } }"
 ```
