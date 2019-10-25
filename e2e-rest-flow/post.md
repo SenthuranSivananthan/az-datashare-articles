@@ -93,7 +93,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 
 Please follow the instructions to [setup role assignment](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions#data-providers) such that Data Share Account can **read** data from the ADLS Gen 2 storage account.
 
-### Step 4: Configure data share
+### Step 4: Create Share
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create)
 
