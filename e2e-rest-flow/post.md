@@ -10,7 +10,9 @@ You will be able to execute these steps through Cloud Shell.
 
 For the purposes of this quickstart, you will need to configure 2 Resource Groups, each with an [Azure Data Lake Store Gen 2 (ADLS Gen 2)](https://docs.microsoft.com/azure/storage/blobs/data-lake-storage-quickstart-create-account).  Following Azure CLI commands can be used to create these resources.
 
-### Setup environment variables
+#### Setup environment variables
+
+Fill in the parameters `PROVIDER_SUBSCRIPTION_ID`, `CONSUMER_SUBSCRIPTION_ID` and `CONSUMER_EMAIL_ADDRESS` and adjust the other parameters based on your environment.
 
 ```bash
 # data share api version
@@ -26,7 +28,6 @@ export PROVIDER_DATASHARE_SHARE_DATASET_NAME="dataset1"
 export PROVIDER_ADLSGEN2_NAME="adlsprovider"
 export PROVIDER_ADLSGEN2_FS="datasetfs"
 export PROVIDER_ADLSGEN2_DATASET_PATH="scripts"
-export CONSUMER_EMAIL_ADDRESS=""
 
 # environment variables for consumer flows
 export CONSUMER_SUBSCRIPTION_ID=""
@@ -36,17 +37,17 @@ export CONSUMER_DATASHARE_ACCOUNT_NAME="adsdemoconsumer"
 export CONSUMER_ADLSGEN2_NAME="adlsconsumer"
 export CONSUMER_ADLSGEN2_FS="datasetfs"
 export CONSUMER_ADLSGEN2_DATASET_PATH="scripts"
+export CONSUMER_EMAIL_ADDRESS=""
 ```
 
-### Create Resource Groups
+#### Create Resource Groups
 
 ```bash
 az group create -n $PROVIDER_RESOURCE_GROUP -l $PROVIDER_LOCATION
-
 az group create -n $CONSUMER_RESOURCE_GROUP -l $CONSUMER_LOCATION
 ```
 
-### Create ADLS Gen 2 Storage Accounts
+#### Create ADLS Gen 2 Storage Accounts
 
 ```bash
 # Add CLI extension for ADLS Gen 2
@@ -59,7 +60,7 @@ az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-nam
 az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-namespace true -l $CONSUMER_LOCATION -g $CONSUMER_RESOURCE_GROUP -n $CONSUMER_ADLSGEN2_NAME
 ```
 
-### Setup filesystem and seed data to the provider storage account
+#### Setup filesystem and seed data to the provider storage account
 
 ```bash
 # Retrieve the storage account connection string for provider storage account
@@ -72,7 +73,7 @@ az storage container create --name $PROVIDER_ADLSGEN2_FS
 az storage blob upload-batch --source . --destination datasetfs --destination-path scripts/terraform
 ```
 
-### Setup filesystem for the consumer storage account
+#### Setup filesystem for the consumer storage account
 
 ```bash
 # Retrieve the storage account connection string for provider storage account
@@ -84,7 +85,7 @@ az storage container create --name $CONSUMER_ADLSGEN2_FS
 
 ## Configure Azure Data Share for Provider
 
-### Step 1: Create Azure Data Share account
+#### Step 1: Create Azure Data Share account
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create)
 
@@ -105,11 +106,11 @@ REST API call
 az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"eastus2\", \"identity\": { \"type\": \"SystemAssigned\"}}"
 ```
 
-### Step 2: Configure read permissions for Azure Data Share account
+#### Step 2: Configure read permissions for Azure Data Share account
 
 Please follow the instructions to [setup role assignment](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions#data-providers) such that Data Share Account can **read** data from the ADLS Gen 2 storage account.
 
-### Step 3: Create Share
+#### Step 3: Create Share
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create)
 
@@ -131,7 +132,7 @@ REST API Call
 az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"description\": \"Share description\", \"terms\": \"Confidential\", \"shareKind\": \"CopyBased\" } }"
 ```
 
-### Step 4: Create Data Set
+#### Step 4: Create Data Set
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/datasets/create)
 
@@ -157,7 +158,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 ```
 
 
-### Step 5: Create Synchronization Schedule
+#### Step 5: Create Synchronization Schedule
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/synchronizationsettings/create)
 
@@ -180,7 +181,7 @@ REST API Call
 az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/synchronizationSettings/hourlysync?api-version=$DATA_SHARE_API_VERSION" --body "{  \"kind\": \"ScheduleBased\",   \"properties\": {     \"synchronizationTime\": \"2019-01-01T01:00:52.9614956Z\",     \"recurrenceInterval\": \"Hour\",     \"synchronizationMode\": \"Incremental\"  }}"
 ```
 
-### Step 6: Create Invitation
+#### Step 6: Create Invitation
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/invitations/create)
 
@@ -204,7 +205,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 ## Configure Azure Data Share for Consumer
 
 
-### Step 1:  Create Azure Data Share for Consumer
+#### Step 1:  Create Azure Data Share for Consumer
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create)
 
@@ -225,12 +226,12 @@ REST API call
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"eastus2\", \"identity\": { \"type\": \"SystemAssigned\"}}"
 ```
 
-### Step 2: Configure write permissions for Azure Data Share account
+#### Step 2: Configure write permissions for Azure Data Share account
 
 Please follow the instructions to [setup role assignment](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions#data-consumers) such that Data Share Account can **write** data from the ADLS Gen 2 storage account.
 
 
-### Step 3: Identify invitations
+#### Step 3: Identify invitations
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/consumerinvitations/listinvitations)
 
@@ -268,7 +269,7 @@ Sample Output
 }
 ```
 
-### Step 4:  Set additional environment variables based on invitation
+#### Step 4:  Set additional environment variables based on invitation
 
 ```bash
 # value from shareName attribute in the response 
@@ -276,7 +277,7 @@ export CONSUMER_SOURCE_SHARE_NAME="scriptshare"
 export CONSUMER_INVITATION_ID="1610d18a-fc26-47e6-8dc4-9980a923d011"
 ```
 
-### Step 5:  Subscribe to the invitation
+#### Step 5:  Subscribe to the invitation
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/create)
 
@@ -296,7 +297,7 @@ REST API Call
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"invitationId\": \"$CONSUMER_INVITATION_ID\" } }"
 ```
 
-### Step 6:  Identify data sets available on the share
+#### Step 6:  Identify data sets available on the share
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/consumersourcedatasets/listbysharesubscription)
 
@@ -327,14 +328,14 @@ Sample Output
 }
 ```
 
-### Step 7:  Set additional environment variables based on invitation
+#### Step 7:  Set additional environment variables based on invitation
 
 ```bash
 # value from properties.datasetId
 export CONSUMER_SOURCE_DATASET_ID="86fed67b-1a13-48e8-8f84-c74f3c26e3be"
 ```
 
-### Step 8:  Create Data Set mapping to destination ADLS Gen 2 Storage ACcount
+#### Step 8:  Create Data Set mapping to destination ADLS Gen 2 Storage ACcount
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/datasetmappings/create)
 
@@ -360,7 +361,7 @@ REST API Call
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/dataSetMappings/mapping?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"datasetId\": \"$CONSUMER_SOURCE_DATASET_ID\", \"storageAccountName\": \"$CONSUMER_ADLSGEN2_NAME\",\"folderPath\": \"$CONSUMER_ADLSGEN2_DATASET_PATH\", \"fileSystem\": \"$CONSUMER_ADLSGEN2_FS\", \"subscriptionId\": \"$CONSUMER_SUBSCRIPTION_ID\", \"resourceGroup\": \"$CONSUMER_RESOURCE_GROUP\" }}"
 ```
 
-### Step 9:  List data synchronization settings
+#### Step 9:  List data synchronization settings
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/listsourcesharesynchronizationsettings)
 
@@ -389,7 +390,7 @@ Sample Output
 }
 ```
 
-### Step 10:  Set additional environment variables based on invitation
+#### Step 10:  Set additional environment variables based on invitation
 
 ```bash
 # value from properties.datasetId
@@ -397,7 +398,7 @@ export CONSUMER_SYNC_RECURRENCE="Hour"
 export CONSUMER_SYNC_TIME="2019-10-25T20:21:56Z"
 ```
 
-### Step 11:  Trigger incremental synchronization
+#### Step 11:  Trigger incremental synchronization
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/create)
 
