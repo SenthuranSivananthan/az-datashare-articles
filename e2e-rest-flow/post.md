@@ -384,7 +384,7 @@ export CONSUMER_SYNC_RECURRENCE="Hour"
 export CONSUMER_SYNC_TIME="2019-01-01T01:00:52.9614956Z"
 ```
 
-### Step 10:  Trigger full synchronization
+### Step 11:  Trigger full synchronization
 
 [Reference](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/create)
 
