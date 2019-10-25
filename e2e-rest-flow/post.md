@@ -64,7 +64,7 @@ export PROVIDER_DATASHARE_SHARE_NAME="scriptshare"
 export PROVIDER_DATASHARE_SHARE_DATASET_NAME="dataset1"
 export PROVIDER_ADLSGEN2_NAME="adlsprovider"
 export PROVIDER_ADLSGEN2_FS="datasetfs"
-export PROVIDER_ADLSGEN2_DATASET_PATH="/scripts"
+export PROVIDER_ADLSGEN2_DATASET_PATH="scripts"
 export CONSUMER_EMAIL_ADDRESS=""
 ```
 
@@ -137,7 +137,7 @@ JSON Payload
 REST API Call
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/dataSets/$PROVIDER_DATASHARE_SHARE_DATASET_NAME?api-version=2018-11-01-preview" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"storageAccountName\": \"$PROVIDER_ADLSGEN2_NAME\", \"resourceGroup\": \"$PROVIDER_RESOURCE_GROUP\", \"fileSystem\": \"$PROVIDER_ADLSGEN2_FS\", \"folderPath\": \"/$PROVIDER_ADLSGEN2_DATASET_PATH\", \"subscriptionId\": \"$PROVIDER_SUBSCRIPTION_ID\" } }"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/dataSets/$PROVIDER_DATASHARE_SHARE_DATASET_NAME?api-version=2018-11-01-preview" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"storageAccountName\": \"$PROVIDER_ADLSGEN2_NAME\", \"resourceGroup\": \"$PROVIDER_RESOURCE_GROUP\", \"fileSystem\": \"$PROVIDER_ADLSGEN2_FS\", \"folderPath\": \"$PROVIDER_ADLSGEN2_DATASET_PATH\", \"subscriptionId\": \"$PROVIDER_SUBSCRIPTION_ID\" } }"
 ```
 
 
@@ -197,7 +197,7 @@ export CONSUMER_RESOURCE_GROUP="ads-demo-consumer"
 export CONSUMER_DATASHARE_ACCOUNT_NAME="adsdemoconsumer"
 export CONSUMER_ADLSGEN2_NAME="adlsconsumer"
 export CONSUMER_ADLSGEN2_FS="datasetfs"
-export CONSUMER_ADLSGEN2_DATASET_PATH="/shared-data/scripts"
+export CONSUMER_ADLSGEN2_DATASET_PATH="scripts"
 ```
 
 ### Step 2:  Create Azure Data Share for Consumer
@@ -269,9 +269,8 @@ Sample Output
 ```bash
 # value from shareName attribute in the response 
 export CONSUMER_SOURCE_SHARE_NAME="scriptshare"
-export CONSUMER_INVITATION_ID="f2b219eb-6378-4237-8ca1-28cc5cc53599"
+export CONSUMER_INVITATION_ID="1610d18a-fc26-47e6-8dc4-9980a923d011"
 ```
-
 
 ### Step 5:  Subscribe to the invitation
 
@@ -328,7 +327,7 @@ Sample Output
 
 ```bash
 # value from properties.datasetId
-export CONSUMER_SOURCE_DATASET_ID="49d3b8b8-1a79-48c2-86cb-2cec1519b817"
+export CONSUMER_SOURCE_DATASET_ID="86fed67b-1a13-48e8-8f84-c74f3c26e3be"
 ```
 
 ### Step 8:  Create Data Set mapping to destination ADLS Gen 2 Storage ACcount
@@ -391,7 +390,7 @@ Sample Output
 ```bash
 # value from properties.datasetId
 export CONSUMER_SYNC_RECURRENCE="Hour"
-export CONSUMER_SYNC_TIME="2019-01-01T01:00:52.9614956Z"
+export CONSUMER_SYNC_TIME="2019-10-25T20:21:56Z"
 ```
 
 ### Step 11:  Trigger incremental synchronization
