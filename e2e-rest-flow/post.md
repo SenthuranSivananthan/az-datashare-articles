@@ -1,4 +1,4 @@
-# Azure Data Share configuration using REST APIs
+# Configure Azure Data Share using REST APIs
 
 In this quickstart, you will configure Azure Data Share through REST APIs for Provider and Consumer integration flows. You will use Azure Data Lake Store Gen 2 as the source and destination locations and configure Data Share to transfer data to Consumers on an hourly basis.
 
