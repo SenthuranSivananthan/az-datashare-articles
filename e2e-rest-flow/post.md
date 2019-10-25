@@ -72,7 +72,7 @@ az storage container create --name $PROVIDER_ADLSGEN2_FS
 az storage blob upload-batch --source . --destination datasetfs --destination-path scripts/terraform
 ```
 
-### Setup filestem for the consumer storage account
+### Setup filesystem for the consumer storage account
 
 ```bash
 # Retrieve the storage account connection string for provider storage account
