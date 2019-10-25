@@ -69,7 +69,7 @@ az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-nam
 az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-namespace true -l $CONSUMER_LOCATION -g $CONSUMER_RESOURCE_GROUP -n $CONSUMER_ADLSGEN2_NAME
 ```
 
-![ADLS Gen 2 Storage Accounts](./media/e2e-rest-flow/prereq-rg-adlsgen2.png)
+![ADLS Gen 2 Storage Accounts](./media/e2e-rest-flow/prereq-rg-adlsgen2.PNG)
 
 #### Setup filesystem and seed data to the provider storage account
 
@@ -86,7 +86,7 @@ az storage container create --name $PROVIDER_ADLSGEN2_FS
 az storage blob upload-batch --source . --destination datasetfs --destination-path logs
 ```
 
-![ADLS Gen 2 file system with the uploaded files](./media/e2e-rest-flow/provider-fs-uploaded-files.png)
+![ADLS Gen 2 file system with the uploaded files](./media/e2e-rest-flow/provider-fs-uploaded-files.PNG)
 
 #### Setup filesystem for the consumer storage account
 
@@ -102,7 +102,7 @@ export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-strin
 az storage container create --name $CONSUMER_ADLSGEN2_FS
 ```
 
-![ADLS Gen 2 with empty file system](./media/e2e-rest-flow/consumer-fs.png)
+![ADLS Gen 2 with empty file system](./media/e2e-rest-flow/consumer-fs.PNG)
 
 ## Configure Azure Data Share for Provider
 
