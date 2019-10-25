@@ -420,3 +420,13 @@ REST API Call
 ```bash
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/triggers/incrementaltrigger?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"ScheduleBased\", \"properties\": { \"synchronizationTime\": \"$CONSUMER_SYNC_TIME\", \"recurrenceInterval\": \"$CONSUMER_SYNC_RECURRENCE\", \"synchronizationMode\": \"Incremental\" } }"
 ```
+
+
+## Clean Up
+
+You can delete the resource groups to clean up all of the resources.
+
+```bash
+az group delete -n $PROVIDER_RESOURCE_GROUP -y --no-wait
+az group delete -n $CONSUMER_RESOURCE_GROUP -y --no-wait
+```
