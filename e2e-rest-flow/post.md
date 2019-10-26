@@ -406,7 +406,7 @@ export CONSUMER_INVITATION_ID=`cat /tmp/consumer-invitations-output.json | jq --
 
 #### Step 5:  Subscribe to the invitation
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/create) to subscribe.
+Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/create) to subscribe to the invitation.
 
 **Payload**
 
