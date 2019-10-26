@@ -1,10 +1,19 @@
 # Configure Azure Data Share using REST APIs
 
-In this tutorial, you will configure Azure Data Share through REST APIs for Provider and Consumer integration flows. You will use Azure Data Lake Store Gen 2 as the source and destination locations and configure Data Share to transfer data to Consumers on an hourly basis.
+In this tutorial, you will configure Azure Data Share (ADS) through REST APIs for Provider and Consumer integration flows. You will use Azure Data Lake Store Gen 2 (ADLS Gen2) as the source and destination storage accounts and configure ADS to transfer data between the storage accounts on an hourly basis.
 
-REST APIs will be invoked using `az rest` command.  This simplies the tutorial by delegating the credential management, request/response flows and error handling.  `az rest` will use the credentials (i.e. OAuth token) from the account that's logged in via `az login` to invoke the requests.  You can learn more from the [Azure CLI documentation](https://docs.microsoft.com/cli/azure/reference-index?view=azure-cli-latest#az-rest).
+To simplify the tutorial, you will use `az rest` commands to invoke the ADS management endpoints.  `az rest` will automatically use the credentials from the user account or service principal that's logged in through `az login` and process the request & response flows.  You can learn more from the [Azure CLI documentation](https://docs.microsoft.com/cli/azure/reference-index?view=azure-cli-latest#az-rest).
 
-You will be able to execute these steps through Cloud Shell.
+You will be able to execute these steps through Azure Cloud Shell.
+
+This tutorial will allow you to:
+
+1. Create a Azure Data Share account and share data set
+2. Configure role-based access control for sharing data between ADLS Gen2 accounts
+3. Schedule synchronization schedule
+4. Send invitations through email to consumer accounts
+5. Accept the invitation, map dataset to ADLS Gen2 account and monitor data transfers
+
 
 ## Prerequisites
 
