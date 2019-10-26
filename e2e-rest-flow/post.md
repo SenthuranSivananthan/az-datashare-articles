@@ -172,9 +172,10 @@ cat /tmp/provider-create-api-output.json | jq
 
 Grant `Storage Blob Data Reader` [role](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions#data-providers) to the ADLS Gen 2 account so that Azure Data Share account can read and share data with the consumers.
 
+Use the output file generated in the previous step to extract the value from `identity.principalId` field.
 
 ```bash
-export PROVIDER_DATASHARE_ACCOUNT_MSI="6af8b838-cf60-40ae-a6aa-419e0c39c254"
+export PROVIDER_DATASHARE_ACCOUNT_MSI=`cat /tmp/provider-create-api-output.json | jq -r '.identity.principalId'`
 
 az role assignment create --role "Storage Blob Data Reader" --assignee-object-id $PROVIDER_DATASHARE_ACCOUNT_MSI --scope /subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$PROVIDER_ADLSGEN2_NAME
 ```
@@ -200,7 +201,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"description\": \"Share description\", \"terms\": \"Confidential\", \"shareKind\": \"CopyBased\" } }" --output-file /tmp/provider-create-data-share.json
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"description\": \"Share description\", \"terms\": \"Confidential\", \"shareKind\": \"CopyBased\" } }"
 ```
 
 ![Share](./media/e2e-rest-flow/provider-share.PNG)
@@ -230,7 +231,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/datasets/crea
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/dataSets/$PROVIDER_DATASHARE_SHARE_DATASET_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"storageAccountName\": \"$PROVIDER_ADLSGEN2_NAME\", \"resourceGroup\": \"$PROVIDER_RESOURCE_GROUP\", \"fileSystem\": \"$PROVIDER_ADLSGEN2_FS\", \"folderPath\": \"$PROVIDER_ADLSGEN2_DATASET_PATH\", \"subscriptionId\": \"$PROVIDER_SUBSCRIPTION_ID\" } }" --output-file /tmp/provider-dataset-output.json
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/dataSets/$PROVIDER_DATASHARE_SHARE_DATASET_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"storageAccountName\": \"$PROVIDER_ADLSGEN2_NAME\", \"resourceGroup\": \"$PROVIDER_RESOURCE_GROUP\", \"fileSystem\": \"$PROVIDER_ADLSGEN2_FS\", \"folderPath\": \"$PROVIDER_ADLSGEN2_DATASET_PATH\", \"subscriptionId\": \"$PROVIDER_SUBSCRIPTION_ID\" } }"
 ```
 
 ![Data Set](./media/e2e-rest-flow/provider-share-dataset.PNG)
@@ -256,7 +257,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/synchronizati
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/synchronizationSettings/hourlysync?api-version=$DATA_SHARE_API_VERSION" --body "{  \"kind\": \"ScheduleBased\",   \"properties\": {     \"synchronizationTime\": \"2019-01-01T01:00:52.9614956Z\",     \"recurrenceInterval\": \"Hour\",     \"synchronizationMode\": \"Incremental\"  }}" --output-file /tmp/provider-sync-profile.json
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/synchronizationSettings/hourlysync?api-version=$DATA_SHARE_API_VERSION" --body "{  \"kind\": \"ScheduleBased\",   \"properties\": {     \"synchronizationTime\": \"2019-01-01T01:00:52.9614956Z\",     \"recurrenceInterval\": \"Hour\",     \"synchronizationMode\": \"Incremental\"  }}"
 ```
 
 ![Synchronization profile](./media/e2e-rest-flow/provider-share-sync.PNG)
@@ -279,7 +280,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/invitations/c
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/invitations/invite-user?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"targetEmail\": \"$CONSUMER_EMAIL_ADDRESS\" } }" --output-file /tmp/provider-invite.json
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/invitations/invite-user?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"targetEmail\": \"$CONSUMER_EMAIL_ADDRESS\" } }"
 ```
 
 ![Invitation](./media/e2e-rest-flow/provider-share-invite.PNG)
@@ -341,8 +342,10 @@ cat /tmp/consumer-create-api-output.json | jq
 
 Grant `Storage Blob Data Contributor` [role](https://docs.microsoft.com/en-us/azure/data-share/concepts-roles-permissions#data-consumer) to the ADLS Gen 2 account so that Azure Data Share account can write data.
 
+Use the output file generated in the previous step to extract the value from `identity.principalId` field.
+
 ```bash
-export CONSUMER_DATASHARE_ACCOUNT_MSI="31c1bef0-23b2-49f5-aef2-4e3ec58c304c"
+export CONSUMER_DATASHARE_ACCOUNT_MSI=`cat /tmp/consumer-create-api-output.json | jq -r '.identity.principalId'`
 
 az role assignment create --role "Storage Blob Data Contributor" --assignee-object-id $CONSUMER_DATASHARE_ACCOUNT_MSI --scope /subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$CONSUMER_ADLSGEN2_NAME
 ```
@@ -452,9 +455,11 @@ cat /tmp/consumer-datasets-on-share-output.json | jq
 
 #### Step 7:  Set additional environment variables based on invitation
 
+Use the output file generated in the previous step to extract the value from `properties.dataSetId` field from the first item in the array.  This example only considers the first dataset in the Share.  If there are multiple datasets, then interate through the value array.
+
 ```bash
 # value from properties.datasetId
-export CONSUMER_SOURCE_DATASET_ID="e3f48b13-e333-4750-8027-f2325a571619"
+export CONSUMER_SOURCE_DATASET_ID=`cat /tmp/consumer-datasets-on-share-output.json | jq -r '.value[0].properties.dataSetId'`
 ```
 
 #### Step 8:  Create Data Set mapping to destination ADLS Gen 2 Storage ACcount
@@ -516,10 +521,12 @@ cat /tmp/consumer-sync-settings-output.json | jq
 
 #### Step 10:  Set additional environment variables based on invitation
 
+Use the output file generated in the previous step to extract the value from `properties.recurrenceInterval` and `properties.synchronizationTime` fields from the first item in the array.
+
 ```bash
 # value from properties.datasetId
-export CONSUMER_SYNC_RECURRENCE="Hour"
-export CONSUMER_SYNC_TIME="2019-01-01T01:00:52.9614956Z"
+export CONSUMER_SYNC_RECURRENCE=`cat /tmp/consumer-sync-settings-output.json | jq -r '.value[0].properties.recurrenceInterval'`
+export CONSUMER_SYNC_TIME=`cat /tmp/consumer-sync-settings-output.json | jq -r '.value[0].properties.synchronizationTime'`
 ```
 
 #### Step 11:  Trigger incremental synchronization
