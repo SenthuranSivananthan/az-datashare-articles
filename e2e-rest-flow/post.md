@@ -23,7 +23,7 @@ export PROVIDER_SUBSCRIPTION_ID=""
 export PROVIDER_RESOURCE_GROUP="ads-demo-provider"
 export PROVIDER_LOCATION="eastus2"
 export PROVIDER_DATASHARE_ACCOUNT_NAME="adsdemoprovider"
-export PROVIDER_DATASHARE_SHARE_NAME="scriptshare"
+export PROVIDER_DATASHARE_SHARE_NAME="ads-log-share"
 export PROVIDER_DATASHARE_SHARE_DATASET_NAME="dataset1"
 export PROVIDER_ADLSGEN2_NAME="adlsprovider"
 export PROVIDER_ADLSGEN2_FS="datasetfs"
@@ -167,7 +167,7 @@ az role assignment create --role "Storage Blob Data Reader" --assignee-object-id
 
 #### Step 3: Create Share
 
-[Reference](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create)
+Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create) to create a new Share.
 
 **Payload**
 
@@ -184,12 +184,17 @@ az role assignment create --role "Storage Blob Data Reader" --assignee-object-id
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"description\": \"Share description\", \"terms\": \"Confidential\", \"shareKind\": \"CopyBased\" } }"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"description\": \"Share description\", \"terms\": \"Confidential\", \"shareKind\": \"CopyBased\" } }" --output-file /tmp/provider-create-data-share.json
 ```
+
+![Share](./media/e2e-rest-flow/provider-share.PNG)
+
+![Share information](./media/e2e-rest-flow/provider-share-details.PNG)
+
 
 #### Step 4: Create Data Set
 
-[Reference](https://docs.microsoft.com/en-us/rest/api/datashare/datasets/create)
+Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/datasets/create) to create a new Data Set in the Share.
 
 **Payload**
 
@@ -209,13 +214,15 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/dataSets/$PROVIDER_DATASHARE_SHARE_DATASET_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"storageAccountName\": \"$PROVIDER_ADLSGEN2_NAME\", \"resourceGroup\": \"$PROVIDER_RESOURCE_GROUP\", \"fileSystem\": \"$PROVIDER_ADLSGEN2_FS\", \"folderPath\": \"$PROVIDER_ADLSGEN2_DATASET_PATH\", \"subscriptionId\": \"$PROVIDER_SUBSCRIPTION_ID\" } }"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/dataSets/$PROVIDER_DATASHARE_SHARE_DATASET_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"storageAccountName\": \"$PROVIDER_ADLSGEN2_NAME\", \"resourceGroup\": \"$PROVIDER_RESOURCE_GROUP\", \"fileSystem\": \"$PROVIDER_ADLSGEN2_FS\", \"folderPath\": \"$PROVIDER_ADLSGEN2_DATASET_PATH\", \"subscriptionId\": \"$PROVIDER_SUBSCRIPTION_ID\" } }" --output-file /tmp/provider-dataset-output.json
 ```
+
+![Data Set](./media/e2e-rest-flow/provider-share-dataset.PNG)
 
 
 #### Step 5: Create Synchronization Schedule
 
-[Reference](https://docs.microsoft.com/en-us/rest/api/datashare/synchronizationsettings/create)
+Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/synchronizationsettings/create) to create a new synchronization profile.
 
 **Payload**
 
@@ -233,12 +240,15 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/synchronizationSettings/hourlysync?api-version=$DATA_SHARE_API_VERSION" --body "{  \"kind\": \"ScheduleBased\",   \"properties\": {     \"synchronizationTime\": \"2019-01-01T01:00:52.9614956Z\",     \"recurrenceInterval\": \"Hour\",     \"synchronizationMode\": \"Incremental\"  }}"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/synchronizationSettings/hourlysync?api-version=$DATA_SHARE_API_VERSION" --body "{  \"kind\": \"ScheduleBased\",   \"properties\": {     \"synchronizationTime\": \"2019-01-01T01:00:52.9614956Z\",     \"recurrenceInterval\": \"Hour\",     \"synchronizationMode\": \"Incremental\"  }}" --output-file /tmp/provider-sync-profile.json
 ```
+
+![Synchronization profile](./media/e2e-rest-flow/provider-share-sync.PNG)
+
 
 #### Step 6: Create Invitation
 
-[Reference](https://docs.microsoft.com/en-us/rest/api/datashare/invitations/create)
+Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/invitations/create) to create a new invitation.  An invitation email will be sent to the value in `$CONSUMER_EMAIL_ADDRESS`.
 
 **Payload**
 
@@ -256,9 +266,14 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME/shares/$PROVIDER_DATASHARE_SHARE_NAME/invitations/invite-user?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"targetEmail\": \"$CONSUMER_EMAIL_ADDRESS\" } }"
 ```
 
+![Invitation](./media/e2e-rest-flow/provider-share-invite.PNG)
+
+**Sample invitation email**
+
+![Invitation](./media/e2e-rest-flow/provider-share-invite-email.png)
+
 
 ## Configure Azure Data Share for Consumer
-
 
 #### Step 1:  Create Azure Data Share for Consumer
 
