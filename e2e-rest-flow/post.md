@@ -142,7 +142,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/crea
 ```bash
 az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"$PROVIDER_LOCATION\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/provider-create-api-output.json
 
-cat /tmp/provider-create-api-output.json
+cat /tmp/provider-create-api-output.json | jq
 ```
 
 **Output**
@@ -311,7 +311,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/crea
 ```bash
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"$CONSUMER_LOCATION\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/consumer-create-api-output.json
 
-cat /tmp/consumer-create-api-output.json
+cat /tmp/consumer-create-api-output.json | jq
 ```
 
 **Output**
@@ -358,7 +358,7 @@ Use [HTTP GET](https://docs.microsoft.com/en-us/rest/api/datashare/consumerinvit
 ```bash
 az rest -m GET -u "https://management.azure.com/providers/Microsoft.DataShare/ListInvitations?api-version=$DATA_SHARE_API_VERSION" --output-file /tmp/consumer-invitations-output.json
 
-cat /tmp/consumer-invitations-output.json
+cat /tmp/consumer-invitations-output.json | jq
 ```
 
 **Output**
@@ -428,7 +428,7 @@ Use [HTTP GET](https://docs.microsoft.com/en-us/rest/api/datashare/consumersourc
 ```bash
 az rest -m GET -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/ConsumerSourceDataSets?api-version=$DATA_SHARE_API_VERSION" --output-file /tmp/consumer-datasets-on-share-output.json
 
-cat /tmp/consumer-datasets-on-share-output.json
+cat /tmp/consumer-datasets-on-share-output.json | jq
 ```
 
 **Output**
@@ -495,7 +495,7 @@ Use [HTTP POST](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscri
 ```bash
 az rest -m post -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/listSourceShareSynchronizationSettings?api-version=$DATA_SHARE_API_VERSION" --output-file /tmp/consumer-sync-settings-output.json
 
-cat /tmp/consumer-sync-settings-output.json
+cat /tmp/consumer-sync-settings-output.json | jq
 ```
 
 **Output**
