@@ -558,7 +558,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/crea
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME/triggers/incrementaltrigger?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"ScheduleBased\", \"properties\": { \"synchronizationTime\": \"$CONSUMER_SYNC_TIME\", \"recurrenceInterval\": \"$CONSUMER_SYNC_RECURRENCE\", \"synchronizationMode\": \"Incremental\" } }"
 ```
 
-![Enabled Synchronization](./media/e2e-rest-flow/Consumer-share-sync-enabled.PNG)
+![Enabled Synchronization](./media/e2e-rest-flow/consumer-share-sync-enabled.PNG)
 
 #### Step 12:  Validate synchronized data
 
