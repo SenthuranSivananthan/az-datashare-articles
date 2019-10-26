@@ -128,7 +128,7 @@ Create an Azure Data Share account that will define the settings for data shares
 
 ```json
 {
-  "location": "eastus2",
+  "location": "$PROVIDER_LOCATION",
   "identity": {
     "type": "SystemAssigned"
   }
@@ -140,7 +140,7 @@ Create an Azure Data Share account that will define the settings for data shares
 Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create) to create a new Azure Data Share account.
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"eastus2\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/provider-create-api-output.json
+az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"$PROVIDER_LOCATION\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/provider-create-api-output.json
 
 cat /tmp/provider-create-api-output.json
 ```
@@ -299,11 +299,19 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/crea
 
 ```json
 {
-  "location": "eastus2",
+  "location": "$CONSUMER_LOCATION",
   "identity": {
     "type": "SystemAssigned"
   }
 }
+```
+
+**REST API**
+
+```bash
+az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"$CONSUMER_LOCATION\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/consumer-create-api-output.json
+
+cat /tmp/consumer-create-api-output.json
 ```
 
 **Output**
@@ -327,14 +335,6 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/crea
   "type": "Microsoft.DataShare/accounts",
   "location": "$CONSUMER_LOCATION"
 }
-```
-
-**REST API**
-
-```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"eastus2\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/consumer-create-api-output.json
-
-cat /tmp/consumer-create-api-output.json
 ```
 
 #### Step 2: Configure write permissions for Azure Data Share account
