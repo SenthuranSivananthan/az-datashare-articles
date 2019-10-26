@@ -57,6 +57,7 @@ export CONSUMER_DATASHARE_ACCOUNT_NAME="adsdemoconsumer"
 export CONSUMER_ADLSGEN2_NAME="adlsconsumer"
 export CONSUMER_ADLSGEN2_FS="datasetfs"
 export CONSUMER_ADLSGEN2_DATASET_PATH="logs"
+export CONSUMER_DATASHARE_INVITED_SHARE_NAME=$PROVIDER_DATASHARE_SHARE_NAME
 export CONSUMER_EMAIL_ADDRESS=""
 ```
 
@@ -113,7 +114,7 @@ Create a filesystem on the storage account using the `az storage container` comm
 To upload data, set the environment variable `AZURE_STORAGE_CONNECTION_STRING` with the connection string of the storage account.  This information is extracted using the `--query` Azure CLI option.
 
 ```bash
-# Retrieve the storage account connection string for Provider storage account
+# Retrieve the storage account connection string for Consumer storage account
 export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-string -g $CONSUMER_RESOURCE_GROUP -n $CONSUMER_ADLSGEN2_NAME -o json --query "connectionString"`
 
 # Create a filesystem
@@ -397,9 +398,8 @@ cat /tmp/consumer-invitations-output.json | jq
 #### Step 4:  Set additional environment variables based on invitation
 
 ```bash
-# value from shareName attribute in the response 
-export CONSUMER_SOURCE_SHARE_NAME="ads-log-share"
-export CONSUMER_INVITATION_ID="6b350371-d163-433f-af0f-3ae1fa25cafc"
+# value from shareName attribute in the response
+export CONSUMER_INVITATION_ID=`cat /tmp/consumer-invitations-output.json | jq --arg CONSUMER_DATASHARE_INVITED_SHARE_NAME "$CONSUMER_DATASHARE_INVITED_SHARE_NAME" -c '.[] | select (.[].properties.shareName | contains($CONSUMER_DATASHARE_INVITED_SHARE_NAME))' | jq -r ".[].properties.invitationId"`
 ```
 
 #### Step 5:  Subscribe to the invitation
@@ -419,7 +419,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscrip
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"invitationId\": \"$CONSUMER_INVITATION_ID\" } }"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"invitationId\": \"$CONSUMER_INVITATION_ID\" } }"
 ```
 
 ![Share](./media/e2e-rest-flow/consumer-share.PNG)
@@ -433,7 +433,7 @@ Use [HTTP GET](https://docs.microsoft.com/en-us/rest/api/datashare/consumersourc
 **REST API**
 
 ```bash
-az rest -m GET -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/ConsumerSourceDataSets?api-version=$DATA_SHARE_API_VERSION" --output-file /tmp/consumer-datasets-on-share-output.json
+az rest -m GET -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME/ConsumerSourceDataSets?api-version=$DATA_SHARE_API_VERSION" --output-file /tmp/consumer-datasets-on-share-output.json
 
 cat /tmp/consumer-datasets-on-share-output.json | jq
 ```
@@ -449,7 +449,7 @@ cat /tmp/consumer-datasets-on-share-output.json | jq
         "dataSetId": "e3f48b13-e333-4750-8027-f2325a571619",
         "dataSetType": "AdlsGen2Folder"
       },
-      "id": "/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/consumerSourceDataSets/dataset1",
+      "id": "/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME/consumerSourceDataSets/dataset1",
       "name": "dataset1",
       "type": "Microsoft.DataShare/ConsumerSourceDataSet"
     }
@@ -489,7 +489,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/datasetmappin
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/dataSetMappings/mapping?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"datasetId\": \"$CONSUMER_SOURCE_DATASET_ID\", \"storageAccountName\": \"$CONSUMER_ADLSGEN2_NAME\",\"folderPath\": \"$CONSUMER_ADLSGEN2_DATASET_PATH\", \"fileSystem\": \"$CONSUMER_ADLSGEN2_FS\", \"subscriptionId\": \"$CONSUMER_SUBSCRIPTION_ID\", \"resourceGroup\": \"$CONSUMER_RESOURCE_GROUP\" }}"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME/dataSetMappings/mapping?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"AdlsGen2Folder\", \"properties\": { \"datasetId\": \"$CONSUMER_SOURCE_DATASET_ID\", \"storageAccountName\": \"$CONSUMER_ADLSGEN2_NAME\",\"folderPath\": \"$CONSUMER_ADLSGEN2_DATASET_PATH\", \"fileSystem\": \"$CONSUMER_ADLSGEN2_FS\", \"subscriptionId\": \"$CONSUMER_SUBSCRIPTION_ID\", \"resourceGroup\": \"$CONSUMER_RESOURCE_GROUP\" }}"
 ```
 
 ![Mapped Data Set](./media/e2e-rest-flow/consumer-share-dataset-mapped.PNG)
@@ -502,7 +502,7 @@ Use [HTTP POST](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscri
 **REST API**
 
 ```bash
-az rest -m post -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/listSourceShareSynchronizationSettings?api-version=$DATA_SHARE_API_VERSION" --output-file /tmp/consumer-sync-settings-output.json
+az rest -m post -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME/listSourceShareSynchronizationSettings?api-version=$DATA_SHARE_API_VERSION" --output-file /tmp/consumer-sync-settings-output.json
 
 cat /tmp/consumer-sync-settings-output.json | jq
 ```
@@ -553,7 +553,7 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/crea
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/triggers/incrementaltrigger?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"ScheduleBased\", \"properties\": { \"synchronizationTime\": \"$CONSUMER_SYNC_TIME\", \"recurrenceInterval\": \"$CONSUMER_SYNC_RECURRENCE\", \"synchronizationMode\": \"Incremental\" } }"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME/triggers/incrementaltrigger?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"ScheduleBased\", \"properties\": { \"synchronizationTime\": \"$CONSUMER_SYNC_TIME\", \"recurrenceInterval\": \"$CONSUMER_SYNC_RECURRENCE\", \"synchronizationMode\": \"Incremental\" } }"
 ```
 
 ![Enabled Synchronization](./media/e2e-rest-flow/Consumer-share-sync-enabled.PNG)
