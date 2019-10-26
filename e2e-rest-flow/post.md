@@ -319,6 +319,8 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/crea
 
 ```bash
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"eastus2\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/consumer-create-api-output.json
+
+cat /tmp/consumer-create-api-output.json
 ```
 
 #### Step 2: Configure write permissions for Azure Data Share account
