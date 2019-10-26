@@ -97,7 +97,7 @@ export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-strin
 az storage container create --name $PROVIDER_ADLSGEN2_FS
 
 # Upload files from local machine - change the source to your location.  The example will upload data to logs folder (i.e. full path will start with datasetfs/logs/)
-az storage blob upload-batch --source . --destination $PROVIDER_ADLSGEN2_FS --destination-path logs
+az storage blob upload-batch --source . --destination $PROVIDER_ADLSGEN2_FS --destination-path $PROVIDER_ADLSGEN2_DATASET_PATH
 ```
 
 ![ADLS Gen 2 file system with the uploaded files](./media/e2e-rest-flow/provider-fs-uploaded-files.PNG)
