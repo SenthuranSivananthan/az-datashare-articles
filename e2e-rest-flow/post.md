@@ -6,7 +6,7 @@ REST APIs will be invoked using `az rest` command.  This simplies the tutorial b
 
 You will be able to execute these steps through Cloud Shell.
 
-## Prerequisite
+## Prerequisites
 
 For the purposes of this tutorial, you will need to configure 2 Resource Groups, each with an [Azure Data Lake Store Gen 2 (ADLS Gen 2)](https://docs.microsoft.com/azure/storage/blobs/data-lake-storage-quickstart-create-account).  Following Azure CLI commands can be used to create these resources.
 
