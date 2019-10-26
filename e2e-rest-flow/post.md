@@ -90,15 +90,15 @@ az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-nam
 
 ![ADLS Gen 2 Storage Accounts](./media/e2e-rest-flow/prereq-rg-adlsgen2.PNG)
 
-#### Setup filesystem and seed data to the Provider storage account
+#### Setup file system and seed data to the Provider storage account
 
-Create a filesystem on the storage account using the `az storage container` command.  Once the filesystem is created, upload a sample dataset (files can be uploaded with nested folders).
+Create a file system on the storage account using the `az storage container` command.  Once the file system is created, upload a sample dataset (files can be uploaded with nested folders).
 
 ```bash
 # Retrieve the storage account connection string for Provider storage account
 export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-string -g $PROVIDER_RESOURCE_GROUP -n $PROVIDER_ADLSGEN2_NAME -o json --query "connectionString"`
 
-# Create a filesystem
+# Create a file system
 az storage container create --name $PROVIDER_ADLSGEN2_FS
 
 # Upload files from local machine - change the source to your location.  The example will upload data to logs folder (i.e. full path will start with datasetfs/logs/)
@@ -107,9 +107,9 @@ az storage blob upload-batch --source . --destination $PROVIDER_ADLSGEN2_FS --de
 
 ![ADLS Gen 2 file system with the uploaded files](./media/e2e-rest-flow/provider-fs-uploaded-files.PNG)
 
-#### Setup filesystem for the Consumer storage account
+#### Setup file system for the Consumer storage account
 
-Create a filesystem on the storage account using the `az storage container` command.  Data from the Provider storage account will be copied to this filesystem in subsequent steps.
+Create a file system on the storage account using the `az storage container` command.  Data from the Provider storage account will be copied to this file system in subsequent steps.
 
 To upload data, set the environment variable `AZURE_STORAGE_CONNECTION_STRING` with the connection string of the storage account.  This information is extracted using the `--query` Azure CLI option.
 
@@ -117,7 +117,7 @@ To upload data, set the environment variable `AZURE_STORAGE_CONNECTION_STRING` w
 # Retrieve the storage account connection string for Consumer storage account
 export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-string -g $CONSUMER_RESOURCE_GROUP -n $CONSUMER_ADLSGEN2_NAME -o json --query "connectionString"`
 
-# Create a filesystem
+# Create a file system
 az storage container create --name $CONSUMER_ADLSGEN2_FS
 ```
 
