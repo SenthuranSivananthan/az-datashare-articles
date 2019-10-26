@@ -11,7 +11,7 @@ This tutorial will allow you to:
 1. Create a Azure Data Share account and share data set
 2. Configure role-based access control for sharing data between ADLS Gen 2 accounts
 3. Schedule synchronization schedule
-4. Send invitations through email to consumer accounts
+4. Send invitations through email to Consumer accounts
 5. Accept the invitation, map dataset to ADLS Gen 2 account and monitor data transfers
 
 This tutorial can be completed with multiple Azure subscription configurations, such as:
@@ -34,7 +34,7 @@ Fill in the parameters `PROVIDER_SUBSCRIPTION_ID`, `CONSUMER_SUBSCRIPTION_ID` an
 # data share api version
 export DATA_SHARE_API_VERSION="2018-11-01-preview"
 
-# environment variables for provider flows
+# environment variables for Provider flows
 export PROVIDER_SUBSCRIPTION_ID=""
 export PROVIDER_RESOURCE_GROUP="ads-demo-provider"
 export PROVIDER_LOCATION="eastus2"
@@ -45,7 +45,7 @@ export PROVIDER_ADLSGEN2_NAME="adlsprovider"
 export PROVIDER_ADLSGEN2_FS="datasetfs"
 export PROVIDER_ADLSGEN2_DATASET_PATH="logs"
 
-# environment variables for consumer flows
+# environment variables for Consumer flows
 export CONSUMER_SUBSCRIPTION_ID=""
 export CONSUMER_RESOURCE_GROUP="ads-demo-consumer"
 export CONSUMER_LOCATION="eastus2"
@@ -76,10 +76,10 @@ Create two ADLS Gen 2 storage accounts.  To enable ADLS Gen 2 CLI support, add t
 # Add CLI extension for ADLS Gen 2
 az extension add --name storage-preview
 
-# Create provider Storage Account
+# Create Provider Storage Account
 az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-namespace true -l $PROVIDER_LOCATION -g $PROVIDER_RESOURCE_GROUP -n $PROVIDER_ADLSGEN2_NAME
 
-# Create consumer Storage Account
+# Create Consumer Storage Account
 az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-namespace true -l $CONSUMER_LOCATION -g $CONSUMER_RESOURCE_GROUP -n $CONSUMER_ADLSGEN2_NAME
 ```
 
@@ -90,7 +90,7 @@ az storage account create --sku Standard_LRS --kind StorageV2 --hierarchical-nam
 Create a filesystem on the storage account using the `az storage container` command.  Once the filesystem is created, upload a sample dataset (files can be uploaded with nested folders).
 
 ```bash
-# Retrieve the storage account connection string for provider storage account
+# Retrieve the storage account connection string for Provider storage account
 export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-string -g $PROVIDER_RESOURCE_GROUP -n $PROVIDER_ADLSGEN2_NAME -o json --query "connectionString"`
 
 # Create a filesystem
@@ -104,12 +104,12 @@ az storage blob upload-batch --source . --destination $PROVIDER_ADLSGEN2_FS --de
 
 #### Setup filesystem for the Consumer storage account
 
-Create a filesystem on the storage account using the `az storage container` command.  Data from the provider storage account will be copied to this filesystem in subsequent steps.
+Create a filesystem on the storage account using the `az storage container` command.  Data from the Provider storage account will be copied to this filesystem in subsequent steps.
 
 To upload data, set the environment variable `AZURE_STORAGE_CONNECTION_STRING` with the connection string of the storage account.  This information is extracted using the `--query` Azure CLI option.
 
 ```bash
-# Retrieve the storage account connection string for provider storage account
+# Retrieve the storage account connection string for Provider storage account
 export AZURE_STORAGE_CONNECTION_STRING=`az storage account show-connection-string -g $CONSUMER_RESOURCE_GROUP -n $CONSUMER_ADLSGEN2_NAME -o json --query "connectionString"`
 
 # Create a filesystem
@@ -545,11 +545,11 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/crea
 az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_SOURCE_SHARE_NAME/triggers/incrementaltrigger?api-version=$DATA_SHARE_API_VERSION" --body "{ \"kind\": \"ScheduleBased\", \"properties\": { \"synchronizationTime\": \"$CONSUMER_SYNC_TIME\", \"recurrenceInterval\": \"$CONSUMER_SYNC_RECURRENCE\", \"synchronizationMode\": \"Incremental\" } }"
 ```
 
-![Enabled Synchronization](./media/e2e-rest-flow/consumer-share-sync-enabled.PNG)
+![Enabled Synchronization](./media/e2e-rest-flow/Consumer-share-sync-enabled.PNG)
 
 #### Step 12:  Validate synchronized data
 
-Wait for the data to synchronize or use Azure Portal to trigger a full synchronization.  Upon completion, verify that the data has been copied to the consumer's storage account.  Since this tutorial is configured with hourly sync, any files uploaded to the provider's storage account will be copied to the consumer every hour.
+Wait for the data to synchronize or use Azure Portal to trigger a full synchronization.  Upon completion, verify that the data has been copied to the Consumer's storage account.  Since this tutorial is configured with hourly sync, any files uploaded to the Provider's storage account will be copied to the Consumer every hour.
 
 ![Synchronization Status](./media/e2e-rest-flow/consumer-sync-status.PNG)
 
