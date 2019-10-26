@@ -127,6 +127,8 @@ Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/crea
 
 ```bash
 az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"eastus2\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/provider-create-api-output.json
+
+cat /tmp/provider-create-api-output.json
 ```
 
 **Output**
