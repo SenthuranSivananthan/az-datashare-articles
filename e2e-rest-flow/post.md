@@ -397,9 +397,11 @@ cat /tmp/consumer-invitations-output.json | jq
 
 #### Step 4:  Set additional environment variables based on invitation
 
+Use the output file generated in the previous step to extract the value from `properties.invitationId`.  This example filters the invitation by `$CONSUMER_DATASHARE_INVITED_SHARE_NAME`, then selects the first invitation.
+
 ```bash
 # value from shareName attribute in the response
-export CONSUMER_INVITATION_ID=`cat /tmp/consumer-invitations-output.json | jq --arg CONSUMER_DATASHARE_INVITED_SHARE_NAME "$CONSUMER_DATASHARE_INVITED_SHARE_NAME" -c '.[] | select (.[].properties.shareName | contains($CONSUMER_DATASHARE_INVITED_SHARE_NAME))' | jq -r ".[].properties.invitationId"`
+export CONSUMER_INVITATION_ID=`cat /tmp/consumer-invitations-output.json | jq --arg CONSUMER_DATASHARE_INVITED_SHARE_NAME "$CONSUMER_DATASHARE_INVITED_SHARE_NAME" -c '.[] | select (.[].properties.shareName | contains($CONSUMER_DATASHARE_INVITED_SHARE_NAME))' | jq -r ".[0].properties.invitationId"`
 ```
 
 #### Step 5:  Subscribe to the invitation
