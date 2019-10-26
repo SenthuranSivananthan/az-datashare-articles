@@ -537,6 +537,11 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIP
 
 Wait for the data to synchronize or use Azure Portal to trigger a full synchronization.  Upon completion, verify that the data has been copied to the consumer's storage account.  Since this tutorial is configured with hourly sync, any files uploaded to the provider's storage account will be copied to the consumer every hour.
 
+![Synchronization Status](./media/e2e-rest-flow/consumer-sync-status.PNG)
+
+**Data copied to destination ADLS Gen2 storage account**
+
+![Synchronization Status](./media/e2e-rest-flow/consumer-fs-after-sync-data.PNG)
 
 ## Clean Up
 
