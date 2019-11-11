@@ -142,7 +142,7 @@ Create an Azure Data Share account that will define the settings for data shares
 
 **REST API**
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create) to create a new Azure Data Share account.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create) to create a new Azure Data Share account.
 
 ```bash
 az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{\"location\": \"$PROVIDER_LOCATION\", \"identity\": { \"type\": \"SystemAssigned\"}}" --output-file /tmp/provider-create-api-output.json
@@ -189,7 +189,7 @@ az role assignment create --role "Storage Blob Data Reader" --assignee-object-id
 
 #### Step 3: Create Share
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create) to create a new Share.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/shares/create) to create a new Share.
 
 **Payload**
 
@@ -216,7 +216,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 
 #### Step 4: Create Data Set
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/datasets/create) to create a new Data Set in the Share.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/datasets/create) to create a new Data Set in the Share.
 
 **Payload**
 
@@ -244,7 +244,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 
 #### Step 5: Create Synchronization Schedule
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/synchronizationsettings/create) to create a new synchronization profile.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/synchronizationsettings/create) to create a new synchronization profile.
 
 **Payload**
 
@@ -270,7 +270,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 
 #### Step 6: Create Invitation
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/invitations/create) to create a new invitation.  An invitation email will be sent to the value in `$CONSUMER_EMAIL_ADDRESS`.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/invitations/create) to create a new invitation.  An invitation email will be sent to the value in `$CONSUMER_EMAIL_ADDRESS`.
 
 **Payload**
 
@@ -299,7 +299,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$PROVIDER_SUBSCRIP
 
 #### Step 1:  Create Azure Data Share for Consumer
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create) to create a new Azure Data Share account.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/accounts/create) to create a new Azure Data Share account.
 
 **Payload**
 
@@ -359,7 +359,7 @@ az role assignment create --role "Storage Blob Data Contributor" --assignee-obje
 
 #### Step 3: Identify invitations
 
-Use [HTTP GET](https://docs.microsoft.com/en-us/rest/api/datashare/consumerinvitations/listinvitations) to list the invitations.  The invitation information will be used to subscribe to the data sets.
+Use [HTTPS GET](https://docs.microsoft.com/en-us/rest/api/datashare/consumerinvitations/listinvitations) to list the invitations.  The invitation information will be used to subscribe to the data sets.
 
 **REST API**
 
@@ -406,7 +406,7 @@ export CONSUMER_INVITATION_ID=`cat /tmp/consumer-invitations-output.json | jq --
 
 #### Step 5:  Subscribe to the invitation
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/create) to subscribe to the invitation.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/create) to subscribe to the invitation.
 
 **Payload**
 
@@ -430,7 +430,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIP
 
 #### Step 6:  Identify data sets available on the share
 
-Use [HTTP GET](https://docs.microsoft.com/en-us/rest/api/datashare/consumersourcedatasets/listbysharesubscription) to identify the data sets associated with the data share. 
+Use [HTTPS GET](https://docs.microsoft.com/en-us/rest/api/datashare/consumersourcedatasets/listbysharesubscription) to identify the data sets associated with the data share. 
 
 **REST API**
 
@@ -470,7 +470,7 @@ export CONSUMER_SOURCE_DATASET_ID=`cat /tmp/consumer-datasets-on-share-output.js
 
 #### Step 8:  Create Data Set mapping to destination ADLS Gen 2 Storage ACcount
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/datasetmappings/create) to map the source data set to destination data set.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/datasetmappings/create) to map the source data set to destination data set.
 
 **Payload**
 
@@ -499,7 +499,7 @@ az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIP
 
 #### Step 9:  List data synchronization settings
 
-Use [HTTP POST](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/listsourcesharesynchronizationsettings) to identify the synchronization settings.  These settings will be used to enable sync.
+Use [HTTPS POST](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscriptions/listsourcesharesynchronizationsettings) to identify the synchronization settings.  These settings will be used to enable sync.
 
 **REST API**
 
@@ -537,7 +537,7 @@ export CONSUMER_SYNC_TIME=`cat /tmp/consumer-sync-settings-output.json | jq -r '
 
 #### Step 11:  Trigger incremental synchronization
 
-Use [HTTP PUT](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/create) to enable incremental synchronization.
+Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/triggers/create) to enable incremental synchronization.
 
 **Payload**
 
