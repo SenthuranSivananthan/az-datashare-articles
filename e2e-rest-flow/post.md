@@ -402,6 +402,8 @@ Use the output file generated in the previous step to extract the value from `pr
 ```bash
 # value from shareName attribute in the response
 export CONSUMER_INVITATION_ID=`cat /tmp/consumer-invitations-output.json | jq --arg CONSUMER_DATASHARE_INVITED_SHARE_NAME "$CONSUMER_DATASHARE_INVITED_SHARE_NAME" -c '.[] | select (.[].properties.shareName | contains($CONSUMER_DATASHARE_INVITED_SHARE_NAME))' | jq -r ".[0].properties.invitationId"`
+
+export CONSUMER_SOURCE_SHARE_LOCATION=`cat /tmp/consumer-invitations-output.json | jq --arg CONSUMER_DATASHARE_INVITED_SHARE_NAME "$CONSUMER_DATASHARE_INVITED_SHARE_NAME" -c '.[] | select (.[].properties.shareName | contains($CONSUMER_DATASHARE_INVITED_SHARE_NAME))' | jq -r ".[0].properties.location"`
 ```
 
 #### Step 5:  Subscribe to the invitation
@@ -413,7 +415,8 @@ Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscri
 ```json
 {
   "properties": {
-    "invitationId": "$CONSUMER_INVITATION_ID"
+    "invitationId": "$CONSUMER_INVITATION_ID",
+    "sourceShareLocation": "$CONSUMER_SOURCE_SHARE_LOCATION"
   }
 }
 ```
@@ -421,7 +424,7 @@ Use [HTTPS PUT](https://docs.microsoft.com/en-us/rest/api/datashare/sharesubscri
 **REST API**
 
 ```bash
-az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"invitationId\": \"$CONSUMER_INVITATION_ID\" } }"
+az rest -m PUT -u "https://management.azure.com/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME?api-version=$DATA_SHARE_API_VERSION" --body "{ \"properties\": { \"invitationId\": \"$CONSUMER_INVITATION_ID\", \"sourceShareLocation\": \"$CONSUMER_SOURCE_SHARE_LOCATION\" } }"
 ```
 
 ![Share](./media/e2e-rest-flow/consumer-share.PNG)
