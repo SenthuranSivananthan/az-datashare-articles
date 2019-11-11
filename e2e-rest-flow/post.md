@@ -36,7 +36,7 @@ Fill in the parameters `PROVIDER_SUBSCRIPTION_ID`, `CONSUMER_SUBSCRIPTION_ID` an
 
 ```bash
 # data share api version
-export DATA_SHARE_API_VERSION="2018-11-01-preview"
+export DATA_SHARE_API_VERSION="2019-11-01"
 
 # environment variables for Provider flows
 export PROVIDER_SUBSCRIPTION_ID=""
