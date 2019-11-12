@@ -158,13 +158,14 @@ cat /tmp/provider-create-api-output.json | jq
 {
   "identity": {
     "type": "SystemAssigned",
-    "principalId": "6af8b838-cf60-40ae-a6aa-419e0c39c254",
+    "principalId": "fc1ea979-215f-40f6-a240-a510744316a9",
     "tenantId": "--redacted--"
   },
   "properties": {
-    "createdAt": "2019-10-25T2 3:13:35.6740605Z",
-    "createdBy": "--redacted--",
-    "provisioningState": "Creating"
+    "createdAt": "2019-11-12T02:31:59.5412798Z",
+    "provisioningState": "Creating",
+    "userName": "--redacted--",
+    "userEmail": "--redacted--"
   },
   "id": "/subscriptions/$PROVIDER_SUBSCRIPTION_ID/resourceGroups/$PROVIDER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$PROVIDER_DATASHARE_ACCOUNT_NAME",
   "name": "$PROVIDER_DATASHARE_ACCOUNT_NAME",
@@ -328,13 +329,14 @@ cat /tmp/consumer-create-api-output.json | jq
 {
   "identity": {
     "type": "SystemAssigned",
-    "principalId": "31c1bef0-23b2-49f5-aef2-4e3ec58c304c",
+    "principalId": "fc459f1f-a3a8-4386-b981-69b9cdf4e781",
     "tenantId": "--redacted--"
   },
   "properties": {
-    "createdAt": "2019-10-26T0 0:07:21.4617853Z",
-    "createdBy": "--redacted--",
-    "provisioningState": "Creating"
+    "createdAt": "2019-11-12T02:35:19.4744315Z",
+    "provisioningState": "Creating",
+    "userName": "--redacted--",
+    "userEmail": "--redacted--"
   },
   "id": "/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME",
   "name": "$CONSUMER_DATASHARE_ACCOUNT_NAME",
@@ -378,16 +380,19 @@ cat /tmp/consumer-invitations-output.json | jq
       "properties": {
         "description": "Share description",
         "dataSetCount": 1,
-        "invitationId": "6b350371-d163-433f-af0f-3ae1fa25cafc",
+        "invitationId": "9b96ad0c-1323-4abc-bcf7-7c84a130b457",
         "invitationStatus": "Pending",
         "location": "eastus2",
-        "sender": "--redacted--",
-        "senderCompanyName": "Microsoft",
         "shareName": "ads-log-share",
-        "sentAt": "2019-10-25T23:56:58.0364311Z",
-        "termsOfUse": "Confidential"
+        "sentAt": "2019-11-12T02:35:00.1528813Z",
+        "termsOfUse": "Confidential",
+        "providerName": "--redacted--",
+        "providerEmail": "--redacted--",
+        "providerTenantName": "Microsoft",
+        "userName": null,
+        "userEmail": null
       },
-      "id": "/providers/Microsoft.DataShare/consumerInvitations/6b350371-d163-433f-af0f-3ae1fa25cafc",
+      "id": "/providers/Microsoft.DataShare/consumerInvitations/9b96ad0c-1323-4abc-bcf7-7c84a130b457",
       "name": "invite-user",
       "type": "Microsoft.DataShare/consumerInvitations"
     }
@@ -450,8 +455,10 @@ cat /tmp/consumer-datasets-on-share-output.json | jq
   "value": [
     {
       "properties": {
-        "dataSetName": "logs",
-        "dataSetId": "e3f48b13-e333-4750-8027-f2325a571619",
+        "dataSetName": "dataset1",
+        "dataSetPath": "logs",
+        "dataSetId": "3ef14540-115f-4999-8aa1-f7f3a10b2a7e",
+        "dataSetLocation": null,
         "dataSetType": "AdlsGen2Folder"
       },
       "id": "/subscriptions/$CONSUMER_SUBSCRIPTION_ID/resourceGroups/$CONSUMER_RESOURCE_GROUP/providers/Microsoft.DataShare/accounts/$CONSUMER_DATASHARE_ACCOUNT_NAME/shareSubscriptions/$CONSUMER_DATASHARE_INVITED_SHARE_NAME/consumerSourceDataSets/dataset1",
